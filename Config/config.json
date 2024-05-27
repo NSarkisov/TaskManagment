@@ -1,0 +1,6 @@
+{
+  "telegram_token": "enter your telegram token",
+  "api_id" : "enter your api id",
+  "api_hash" : "enter your api_hash",
+  "database_path": "../db/sqlite_db.db"
+}
