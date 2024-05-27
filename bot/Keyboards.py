@@ -38,14 +38,28 @@ class BotKeyboards:
             )
             return login_button
 
+
+    def profile(self):
+
+        keyboard = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("Имя", callback_data="change_name"),
+                    InlineKeyboardButton("Логин", callback_data="change_login"),
+                    InlineKeyboardButton("Отмена", callback_data="cancel_profile"),
+
+                ]
+            ]
+        )
+
+        return keyboard
+
     def main_menu(self):
 
         keyboard = ReplyKeyboardMarkup([
 
             [KeyboardButton("Создать задачу")],
             [KeyboardButton("Просмотр задач")],
-            [KeyboardButton("Обновление задачи")],
-            [KeyboardButton("Удаление задачи")],
             [KeyboardButton("Мой профиль")]
 
         ], resize_keyboard=True)
@@ -91,12 +105,24 @@ class BotKeyboards:
 
         keyboard = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("Выполненные", callback_data="active_tasks")],
-                [InlineKeyboardButton("Не выполненные", callback_data="not_active_tasks")],
+                [InlineKeyboardButton("Активные", callback_data="active_tasks")],
+                [InlineKeyboardButton("Не активные", callback_data="not_active_tasks")],
                 [InlineKeyboardButton("Отмена", callback_data="cancel_viewing")]
             ]
 
         )
+        return keyboard
+
+    def task_menu(self):
+
+        keyboard = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("Назад", callback_data="task_menu")
+                ]
+            ]
+        )
+
         return keyboard
 
     def task_viewer(self, tasks, slides, task_state):
@@ -115,19 +141,33 @@ class BotKeyboards:
 
         elif slides == "first_page":
 
-            buttons.append([task_menu])
-            buttons.append([next_button])
+            buttons.append([task_menu, next_button])
 
         elif slides == "last_page":
 
-            buttons.append([task_menu])
-            buttons.append([previous_button])
+            buttons.append([previous_button, task_menu])
 
         else:
 
-            buttons.append([task_menu])
-            buttons.append([previous_button, next_button])
+            buttons.append([previous_button, task_menu, next_button])
 
         keyboard = InlineKeyboardMarkup(buttons)
+
+        return keyboard
+
+    def task_info(self, task_id):
+
+        keyboard = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("🗑️Удалить задачу", callback_data=f"delete {task_id}"),
+                    InlineKeyboardButton("Сменить статус📝", callback_data=f"change_state {task_id}")
+                ],
+                [
+                    InlineKeyboardButton("Назад", callback_data="back_from_task_info"),
+                    InlineKeyboardButton("Отмена", callback_data="cancel_from_task_info")
+                ]
+            ]
+        )
 
         return keyboard
