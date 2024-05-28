@@ -9,7 +9,6 @@ from pyrogram.handlers import MessageHandler
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from transitions import Machine
 
-
 """ 
     Задачи на вторник:
     - Переделать бота используя FSM, бот готов только редактирования
@@ -136,6 +135,9 @@ async def registration(bot: Client, message: types.Message):
 async def create_task(bot: Client, message: types.Message):
     telegram_id = message.from_user.id
 
+    if telegram_id in buffer["messages_for_edit"].keys():
+        await bot.delete_messages(telegram_id, buffer["messages_for_edit"][telegram_id])
+
     with con:
         check_state = con.execute(queries["check_status"], [telegram_id]).fetchall()[0][0]
 
@@ -152,6 +154,9 @@ async def create_task(bot: Client, message: types.Message):
 @app.on_message(filters.text & filters.private & filters.regex(r"^Просмотр задач$"))
 async def task_overview(bot: Client, message: types.Message):
     telegram_id = message.from_user.id
+
+    if telegram_id in buffer["messages_for_edit"].keys():
+        await bot.delete_messages(telegram_id, buffer["messages_for_edit"][telegram_id])
 
     with con:
         check_state = con.execute(queries["check_status"], [telegram_id]).fetchall()[0][0]
@@ -180,6 +185,10 @@ async def task_overview(bot: Client, message: types.Message):
 async def profile(bot: Client, message: types.Message):
     telegram_id = message.from_user.id
 
+    if  telegram_id in buffer["messages_for_edit"].keys():
+
+        await bot.delete_messages(telegram_id, buffer["messages_for_edit"][telegram_id])
+
     with con:
         check_state = con.execute(queries["check_status"], [telegram_id]).fetchall()[0][0]
 
@@ -202,15 +211,18 @@ async def profile(bot: Client, message: types.Message):
 
 @app.on_message(filters.text & filters.private)
 async def text(bot: Client, message: types.Message):
+
     telegram_id = message.from_user.id
 
     with con:
 
         user_exists = con.execute(queries["searching_user"], [telegram_id]).fetchall()
 
-        check_state = con.execute(queries["check_status"], [telegram_id]).fetchall()[0][0]
+        if user_exists:
 
-        check_task_process = con.execute(queries["check_task_process"], [telegram_id]).fetchall()[0][0]
+            check_state = con.execute(queries["check_status"], [telegram_id]).fetchall()[0][0]
+
+            check_task_process = con.execute(queries["check_task_process"], [telegram_id]).fetchall()[0][0]
 
         if user_exists and check_state != "Зарегистрирован":
 
@@ -369,6 +381,7 @@ async def callback_query(bot: Client, call: types.CallbackQuery):
             con.execute(queries["state_update"], ["Ввод нового логина", chat_id])
 
     if button_name == "cancel_profile":
+
         await bot.delete_messages(chat_id, buffer["messages_for_edit"][chat_id])
 
     if button_name == "task_name":
@@ -524,18 +537,40 @@ async def callback_query(bot: Client, call: types.CallbackQuery):
         buffer["task_groups"].pop(chat_id)
 
     if button_name.startswith("delete"):
+
         task_id = button_name[7:]
 
         task_state = buffer["task_groups"][chat_id]["task_state"]
 
         with con:
+
             task_name = con.execute(queries["task_name"], [task_id]).fetchall()[0][0]
 
             con.execute(queries["delete_task"], [task_id])
 
+            task_left = con.execute(queries["searching_tasks_with_state"], [task_state, chat_id]).fetchall()
+
         await bot.answer_callback_query(call.id, f"Задача {task_name} удалена")
 
-        await task_view(bot, chat_id, column=0, task_state=task_state)
+        if task_left:
+
+            await task_view(bot, chat_id, column=0, task_state=task_state)
+
+        else:
+
+            if task_state == "Не выполнена":
+
+                state_text = f"{texts_dict['tasks_left'][0]} активных {texts_dict['tasks_left'][1]}"
+
+            else:
+
+                state_text = f"{texts_dict['tasks_left'][0]} не активных {texts_dict['tasks_left'][1]}"
+
+            keyboard = bot_keyboards.task_menu()
+
+            await bot.edit_message_text(chat_id, buffer["messages_for_edit"][chat_id],
+                                        state_text, reply_markup=keyboard)
+
 
     if button_name.startswith("change_state"):
 
