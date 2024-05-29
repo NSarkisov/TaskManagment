@@ -41,7 +41,7 @@
 
     "delete_task": "DELETE FROM TASKS WHERE ID = ?",
 
-    "task_change_state": "UPDATE OR IGNORE TASKS SET STATE = ? WHERE ID = ?"
+    "task_change_state": "UPDATE OR IGNORE TASKS SET STATE = ? WHERE ID = ? "
 
   }
 }

@@ -7,7 +7,7 @@ import Fsm
 """
     Импортирование из файла file_manager данных с текстовым словарём и буфером для редактирования или удаления
     сообщений, из pyrogram библиотеки клиент и типы, импорт файла Keyboards и Fsm,
-    Содержит обработчики MessageHandlers, CallbackQueryHandler и функцию task_view
+    Содержит обработчики MessageHandlers, CallbackQueryHandler и функцию task_view 
 """
 
 async def task_view(bot: Client, telegram_id, column, task_state):

@@ -29,4 +29,5 @@ RUN pip install --no-cache /wheels/*
 
 COPY app app
 
-CMD ["python", "app/main.py"]
+CMD ["python", "TaskManagment/bot/main.py"]
+

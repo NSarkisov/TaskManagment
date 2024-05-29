@@ -4,7 +4,7 @@ from pyrogram.types import ReplyKeyboardMarkup, KeyboardButton
 """
     В этом модуле создаётся класс с методами создания объектов различных клавиатур, таких как
     ReplyKeyboardMarkup и InlineKeyboardMarkup, каждый из методов класса возвращает клавиатуру,
-    экземпляр класса создается в файле handlers.py
+    экземпляр класса создается в файле handlers.py 
 """
 class BotKeyboards:
 
