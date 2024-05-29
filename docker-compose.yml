@@ -1,0 +1,19 @@
+version: '3'
+services:
+  TaskManagment:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    env_file:
+      - .env.example
+
+  db:
+    image: sqlite:latest
+    volumes:
+      - ./sqlite_db:/data

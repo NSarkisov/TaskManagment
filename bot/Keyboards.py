@@ -1,13 +1,17 @@
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-
+"""
+    В этом модуле создаётся класс с методами создания объектов различных клавиатур, таких как
+    ReplyKeyboardMarkup и InlineKeyboardMarkup, каждый из методов класса возвращает клавиатуру,
+    экземпляр класса создается в файле handlers.py
+"""
 class BotKeyboards:
 
     def __init__(self):
         pass
 
-    def welcome_keyboard(self):
+    def welcome_keyboard(self) -> ReplyKeyboardMarkup:
 
         keyboard = ReplyKeyboardMarkup([
             [KeyboardButton("Регистрация")],
@@ -16,7 +20,7 @@ class BotKeyboards:
 
         return keyboard
 
-    def registration(self, action):
+    def registration(self, action) -> InlineKeyboardMarkup:
 
         if action == "Name":
             name_button = InlineKeyboardMarkup(
@@ -39,7 +43,7 @@ class BotKeyboards:
             return login_button
 
 
-    def profile(self):
+    def profile(self) -> InlineKeyboardMarkup:
 
         keyboard = InlineKeyboardMarkup(
             [
@@ -54,7 +58,7 @@ class BotKeyboards:
 
         return keyboard
 
-    def main_menu(self):
+    def main_menu(self) -> ReplyKeyboardMarkup:
 
         keyboard = ReplyKeyboardMarkup([
 
@@ -66,7 +70,7 @@ class BotKeyboards:
 
         return keyboard
 
-    def create_task(self, action):
+    def create_task(self, action) -> InlineKeyboardMarkup:
 
         if action == "Новая задача":
             keyboard = InlineKeyboardMarkup(
@@ -101,7 +105,7 @@ class BotKeyboards:
             )
             return keyboard
 
-    def task_state(self):
+    def task_state(self) -> InlineKeyboardMarkup:
 
         keyboard = InlineKeyboardMarkup(
             [
@@ -113,7 +117,7 @@ class BotKeyboards:
         )
         return keyboard
 
-    def task_menu(self):
+    def task_menu(self) -> InlineKeyboardMarkup:
 
         keyboard = InlineKeyboardMarkup(
             [
@@ -125,7 +129,7 @@ class BotKeyboards:
 
         return keyboard
 
-    def task_viewer(self, tasks, slides, task_state):
+    def task_viewer(self, tasks, slides, task_state) -> InlineKeyboardMarkup:
 
         buttons = [[InlineKeyboardButton(button[1], callback_data=f"Задача {button[0]}")] for button in tasks]
 
@@ -155,7 +159,7 @@ class BotKeyboards:
 
         return keyboard
 
-    def task_info(self, task_id):
+    def task_info(self, task_id) -> InlineKeyboardMarkup:
 
         keyboard = InlineKeyboardMarkup(
             [
