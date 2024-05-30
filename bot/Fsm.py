@@ -40,7 +40,7 @@ class FSM:
 class DB:
 
     def __init__(self):
-        self.con = sl.connect(database, check_same_thread=False)
+        self.con = sl.connect(config.DATABASE_CONNECTION_STRING, check_same_thread=False)
 
     """ 
         Используется соединение с простой базой данных для малых проектов sqlite
