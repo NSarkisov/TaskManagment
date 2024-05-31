@@ -3,22 +3,21 @@ from pyrogram import Client, types
 import Keyboards
 import Fsm
 
-
 """
     Импортирование из файла file_manager данных с текстовым словарём и буфером для редактирования или удаления
     сообщений, из pyrogram библиотеки клиент и типы, импорт файла Keyboards и Fsm,
     Содержит обработчики MessageHandlers, CallbackQueryHandler и функцию task_view 
 """
 
-async def task_view(bot: Client, telegram_id, column, task_state):
 
+async def task_view(bot: Client, telegram_id, column, task_state):
     """
         В функцию передается клиент, id пользователя телеграмм, номер столбца слайда и состояние задачи,
         выполняется запрос к бд для получения списка задач с определённым(выполнена, не выполнена) состоянием
         задачи, получение количества групп по 5 задач, определение количества задач в последней группе,
         логика слайдов и выбор задач в слайд, создание клавиатуры и отправки сообщения с записью его id в буфер
     """
-    tasks = bot_db.get_tasks_with_state(task_state, telegram_id)
+    tasks = bot_db.get_tasks_id_name_on_state(task_state, telegram_id)
     groups = (len(tasks) + 4) // 5
     last_group = len(tasks) - (len(tasks) % 5)
     slide = None
@@ -47,7 +46,6 @@ async def task_view(bot: Client, telegram_id, column, task_state):
 
 
 async def start(bot: Client, message: types.Message):
-
     """
         Обработчик команды /start в боте, получение информации о пользователе из словаря сообщения,
         выполняется запрос к базе данных о записи пользователя в бд, реализованна логика если пользователь еще не
@@ -261,7 +259,6 @@ async def text(bot: Client, message: types.Message):
 
 
 async def callback_query(bot: Client, call: types.CallbackQuery):
-
     """
     Обработчик callback_data в InlineKeyboardMarkup, реализована простая логика путём сверки данных об имени inline
     кнопок, множеством условных операторов if, для каждой кнопки реализована своя логика.
@@ -325,6 +322,7 @@ async def callback_query(bot: Client, call: types.CallbackQuery):
     if button_name == "active_tasks":
 
         tasks = bot_db.get_tasks_id_name_on_state("Не выполнена", chat_id)
+        print(tasks)
 
         if tasks:
             buffer["task_groups"].update({chat_id: {"active_slide": 0, "task_state": "Не выполнена"}})
@@ -440,6 +438,7 @@ async def callback_query(bot: Client, call: types.CallbackQuery):
             keyboard = bot_keyboards.task_menu()
             await bot.edit_message_text(chat_id, buffer["messages_for_edit"][chat_id],
                                         state_text, reply_markup=keyboard)
+
 
 """
     Создание 3 экземпляров, такие как:

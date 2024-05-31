@@ -1,10 +1,8 @@
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 from pyrogram.handlers import MessageHandler, CallbackQueryHandler
+from bot import config
 import handlers
-import config
-
-
 
 """
     В этом модуле реализован класс с экземпляром бота, инициализация подключения, сведения для подключения находятся

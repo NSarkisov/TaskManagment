@@ -1,5 +1,5 @@
 from file_manager import queries
-import config
+from bot import config
 import sqlite3 as sl
 
 
@@ -16,7 +16,6 @@ class FSM:
     """
 
     def users_state_update(self, state, telegram_id) -> None:
-
         with self.con as con:
             con.execute(queries["state_update"], [state, telegram_id])
 
@@ -100,10 +99,6 @@ class DB:
     def get_task_info(self, task_id) -> tuple:
         with self.con as con:
             return con.execute(queries["task_description"], [task_id]).fetchall()[0]
-
-    def get_tasks_with_state(self, state, telegram_id) -> list:
-        with self.con as con:
-            return con.execute(queries["searching_tasks_with_state"], [state, telegram_id]).fetchall()
 
     def create_task(self, user_id, task_name, task_description) -> None:
         with self.con as con:
