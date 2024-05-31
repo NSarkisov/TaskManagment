@@ -402,7 +402,7 @@ async def callback_query(bot: Client, call: types.CallbackQuery):
         status_text = "активных" if task_state == "Не выполнена" else "не активных"
         task_name = bot_db.get_task_name(task_id)
         bot_db.delete_task(task_id)
-        task_left = bot_db.get_tasks_with_state(task_state, chat_id)
+        task_left = bot_db.get_tasks_id_name_on_state(task_state, chat_id)
         await bot.answer_callback_query(call.id, f"Задача {task_name} удалена")
 
         if task_left:
@@ -428,7 +428,7 @@ async def callback_query(bot: Client, call: types.CallbackQuery):
             new_state = f"Задача {task_name} активна"
             bot_fsm.task_state_update("Не выполнена", task_id)
 
-        task_left = bot_db.get_tasks_with_state(task_state, chat_id)
+        task_left = bot_db.get_tasks_id_name_on_state(task_state, chat_id)
         await bot.answer_callback_query(call.id, new_state)
 
         if task_left:
