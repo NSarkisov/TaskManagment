@@ -1,5 +1,5 @@
 from file_manager import queries
-from bot import config
+import config
 import sqlite3 as sl
 
 

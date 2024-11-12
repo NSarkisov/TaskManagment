@@ -1,7 +1,7 @@
 from os import getenv
 from dotenv import load_dotenv
 
-load_dotenv("../.env.example")
+load_dotenv("/TaskManagment/.env.example")
 
 TELEGRAM_BOT_TOKEN = getenv('TELEGRAM_BOT_TOKEN')
 
